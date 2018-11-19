@@ -11,14 +11,25 @@
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
-#include <stdio.h>
 
-void    take_memory_space(t_infos *zone, size_t size)
+t_infos    *take_memory_space(size_t size)
 {
+	t_infos		*zone;
+
+printf("salut\n");
+	if (!(zone = mmap(NULL, sizeof(t_infos), PROT_READ | PROT_WRITE,
+			MAP_ANON | MAP_PRIVATE, -1, 0)))
+		return (NULL);
+printf("ca va\n");
     zone->space = mmap(NULL, (size * 100) + 200,
             PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+printf("bien et toi\n");
     ((unsigned char *)(zone->space))[0] = 'F';
-    zone->len = (size * 100) + 200;
+printf("le grand rex\n");
+    zone->len = (size * 100) + 20;
+printf("zone len = %d\n", (int)zone->len);
+	zone->next = NULL;
+	return (zone);
 }
 
 void    *allocate_memory(t_infos *zone, size_t size)
@@ -27,10 +38,13 @@ void    *allocate_memory(t_infos *zone, size_t size)
     size_t  i;
 
     i = 0;
+	printf("begin allocate memory\n");
     while (i < zone->len)
     {
+	printf("debut boucle\n");
         if (((unsigned char *)zone->space)[i] == 'F')
         {
+		printf("find F\n");
             check = i + 1;
             while (check < zone->len && check < size)
             {
@@ -38,41 +52,61 @@ void    *allocate_memory(t_infos *zone, size_t size)
                     break ;
                 check++;
             }
-            if (check == size)
+		printf("check place done\n");
+            if (check - i >= size)
             {
+			printf("good size find\n");
                 ((unsigned char *)zone->space)[i] = 'A';
                 ((unsigned char *)zone->space)[i + size] = 0;
-                return (&(zone->space[i + 1]));
+                return (zone->space + i + 1);
             }
+			i = check; 
         }
+		printf("end boucle\n");
         i++;
     }
     return (NULL);
+}
+
+void	*search_place_in_page(t_infos *zone, size_t size)
+{
+	void	*ret;
+
+	ret = NULL;
+	if (!zone->space && !(zone = take_memory_space(size)))
+		return (NULL);
+printf("after take memory\n");
+printf("len = %d\n", (int)zone->len);
+printf("after checking zone\n");
+	while (!(ret = allocate_memory(zone, size)))
+	{
+	printf("allocate new page\n");
+		if (!(zone->next = take_memory_space(size)))
+			return (NULL);
+	printf("have new page\n");
+		zone = zone->next;
+	}
+printf("ret est bon\n");
+	return (ret);
 }
 
 void    *malloc(size_t size)
 {
     static t_zones  zones;
 
-    if (!(zones.tiny.space))
-        take_memory_space(&(zones.tiny), TINY);
-    if (!(zones.small.space))
-        take_memory_space(&(zones.small), SMALL);
     if (size <= TINY)
-        return (allocate_memory(&(zones.tiny), size));
+        return (search_place_in_page(&(zones.tiny), size));
     else if (size <= SMALL)
-        return (allocate_memory(&(zones.small), size));
+        return (search_place_in_page(&(zones.small), size));
     return (NULL);
 }
 
 int     main()
 {
-    int     i;
     char    *str;
 
-    str = (char *)malloc(30);
-
-    if (!str)
-        ft_putendl("return NULL");
+	while ((str = (char *)malloc(30)))
+		ft_putendl("momery allocated");
+	ft_putendl("\nallocation failed");
     return (0);
 }

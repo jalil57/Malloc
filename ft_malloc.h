@@ -15,6 +15,7 @@
 
 # include "libft/libft.h"
 # include <sys/mman.h>
+#include <stdio.h>
 
 # define TINY   100
 # define SMALL  300
@@ -24,6 +25,7 @@ typedef struct      s_infos
 {
     void            *space;
     size_t          len;
+	struct s_infos	*next;
 }                   t_infos;
 
 typedef struct      s_zones
