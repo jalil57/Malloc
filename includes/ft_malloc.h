@@ -6,7 +6,7 @@
 /*   By: jtaibi <jtaibi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 17:29:55 by jtaibi            #+#    #+#             */
-/*   Updated: 2018/11/20 20:49:01 by jtaibi           ###   ########.fr       */
+/*   Updated: 2018/11/21 15:22:39 by jtaibi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@
 
 # define TINY   30
 # define SMALL  50
-# define LARGE  450
 
 typedef struct      s_infos
 {
     void            *space;
     size_t          len;
 	struct s_infos	*next;
+    struct s_infos  *before;
 }                   t_infos;
 
 typedef struct      s_zones
