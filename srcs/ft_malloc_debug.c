@@ -6,7 +6,7 @@
 /*   By: jtaibi <jtaibi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 15:48:28 by jtaibi            #+#    #+#             */
-/*   Updated: 2018/11/21 16:49:45 by jtaibi           ###   ########.fr       */
+/*   Updated: 2018/11/21 22:09:41 by jtaibi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,7 @@ void            show_alloc_mem()
 {
     printf("\nMemory :\n");
     vizualise_mem(g_zones->tiny, "TINY");
-    ft_putchar('\n');
     vizualise_mem(g_zones->small, "SMALL");
-    ft_putchar('\n');
     if (g_zones->large)
         vizualise_mem(g_zones->large, "LARGE");
     else

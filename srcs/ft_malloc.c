@@ -12,15 +12,29 @@
 
 #include "ft_malloc.h"
 
+size_t         get_multiple_of_getpagesize(size_t size)
+{
+    size_t     multiple;
+    size_t     page_size;
+
+    page_size = getpagesize();
+    multiple = page_size;
+    while (multiple < size)
+        multiple *= page_size;
+    return (multiple);
+}
+
 t_infos    *allocate_new_page(size_t size)
 {
     size_t      page_size;
 	t_infos		*zone;
 
     if (size > SMALL)
-        page_size = size;
-    else
-        page_size = size <= TINY ? TINY * 4 : SMALL * 4;
+        page_size = get_multiple_of_getpagesize(size);
+    if (size <= TINY)
+        page_size = get_multiple_of_getpagesize(TINY * 100);
+    if (size <= SMALL)
+        page_size = get_multiple_of_getpagesize(SMALL * 100);
 	if (!(zone = mmap(NULL, sizeof(t_infos), PROT_READ | PROT_WRITE,
 			MAP_ANON | MAP_PRIVATE, -1, 0)))
 		return (NULL);
@@ -130,7 +144,7 @@ void        *malloc(size_t size)
 
 int     main()
 {
-    char    *str1, *str2, *str3, *str4;
+    char    *str1, *str2, *str3, *str4, *str5;
 
     if (!(str1 = (char *)malloc(30)))
         exit(0);
@@ -144,6 +158,8 @@ int     main()
     if (!(str4 = (char *)malloc(268)))
         exit(0);
     show_alloc_mem();
-
+    if (!(str5 = realloc(str2, 42)))
+        exit(0);
+    show_alloc_mem();
     return (0);
 }
