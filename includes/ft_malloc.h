@@ -17,8 +17,8 @@
 # include <sys/mman.h>
 #include <stdio.h>
 
-# define TINY   30
-# define SMALL  50
+# define TINY   150
+# define SMALL  5000
 
 typedef struct      s_infos
 {

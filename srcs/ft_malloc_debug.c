@@ -19,7 +19,7 @@ static void     vizualise_mem(t_infos *zone, char *name)
     int     page;
 
     page = 0;
-    printf("%s : %x\n", name, ((unsigned int)zone->space));
+    printf("%s : %x : octets = %zu\n", name, ((unsigned int)zone->space), zone->len);
     while (zone)
     {
         i = 0;
