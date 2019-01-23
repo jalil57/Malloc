@@ -57,7 +57,6 @@ static int      search_ptr_in_larges_zones(t_infos *zone, void *ptr)
                 printf("munmap zone->space failed\n");
             if (munmap(zone, sizeof(t_infos)))
                 printf("munmap zone failed\n");
-            ptr = NULL;
             return (1);
         }
         zone = zone->next;
